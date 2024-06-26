@@ -8,37 +8,44 @@ import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import fetchImages from "./components/fetchImages/fetchImages";
 import EndOfImages from "./components/EndOfImages/EndOfImages";
 import ImageModal from "./components/ImageModal/ImageModal";
+import {
+  UnsplashSearchResponse,
+  Search,
+} from "./components/fetchImages/fetchImages";
 
 function App() {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedImages, setSelectedImages] = useState("");
-  const [endOfCollection, setEndOfCollection] = useState(false);
-  const [hasLoadedImages, setHasLoadedImages] = useState(false);
-  const [totalCollection, setTotalCollection] = useState({});
-  const [totalImages, setTotalImages] = useState(0);
+  const [error, setError] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [images, setImages] = useState<string[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedImages, setSelectedImages] = useState<string>("");
+  const [endOfCollection, setEndOfCollection] = useState<boolean>(false);
+  const [hasLoadedImages, setHasLoadedImages] = useState<boolean>(false);
+  const [totalCollection, setTotalCollection] = useState<number>(0);
+  const [totalImages, setTotalImages] = useState<number>(0);
 
-  const handleOpenModal = (imageUrl) => {
+  const handleOpenModal = (imageUrl: string): void => {
     setSelectedImages(imageUrl);
     setIsOpen(true);
   };
-  const handleCloseModal = () => {
+  const handleCloseModal = (): void => {
     setSelectedImages("");
     setIsOpen(false);
   };
 
-  const handleSearch = async (searchTerm) => {
+  const handleSearch = async (
+    searchTerm: Search,
+    page: Search
+  ): Promise<void> => {
     try {
       setImages([]);
       setLoading(true);
       setError(false);
       setPage(1);
-      setSearchTerm(searchTerm);
-      const data = await fetchImages(searchTerm);
+      setSearchTerm(searchTerm.searchQuery);
+      const data: UnsplashSearchResponse = await fetchImages(searchTerm, page);
       setImages(data.results);
       setTotalCollection(data.total);
       setEndOfCollection(false);
@@ -64,10 +71,13 @@ function App() {
       setEndOfCollection(false);
     }
   }, [page, totalImages]);
-  const handleLoadMore = async () => {
+  const handleLoadMore = async (
+    searchTerm: Search,
+    page: Search
+  ): Promise<void> => {
     try {
       setLoading(true);
-      const nextPageData = await fetchImages(searchTerm, page + 1);
+      const nextPageData = await fetchImages(searchTerm, page);
       setPage((prevPage) => prevPage + 1);
       setImages((prevImages) => [...prevImages, ...nextPageData.results]);
     } catch (error) {
@@ -76,6 +86,7 @@ function App() {
       setLoading(false);
     }
   };
+
   return (
     <>
       <SearchBar onSearch={handleSearch} />
@@ -83,13 +94,12 @@ function App() {
         <ImageGallery images={images} isOpen={handleOpenModal} />
       )}
       {endOfCollection && hasLoadedImages && <EndOfImages />}
-      {error && <ErrorMessage searchTerm={searchTerm} setError={setError} />}
+      {error && <ErrorMessage />}
       {loading && <Loader />}
       {images.length > 0 && !endOfCollection && (
         <LoadMoreBtn onChange={handleLoadMore} />
       )}
       <ImageModal
-        images={images}
         isOpen={isOpen}
         isClose={handleCloseModal}
         imageUrl={selectedImages}
