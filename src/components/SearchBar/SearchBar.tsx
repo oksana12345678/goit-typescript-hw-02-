@@ -5,13 +5,13 @@ import { IoSearchOutline } from "react-icons/io5";
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
 import { useId } from "react";
 
-type Search = {
-  onSearch: (text: string) => void;
+type Searching = {
+  onSearch: (text: string, page: number) => void;
 };
 type SubmitValues = {
   text: string;
 };
-const SearchBar: React.FC<Search> = ({ onSearch }) => {
+const SearchBar: React.FC<Searching> = ({ onSearch }) => {
   const searchId = useId();
   const notify = () =>
     toast(
@@ -30,7 +30,7 @@ const SearchBar: React.FC<Search> = ({ onSearch }) => {
       notify();
       return;
     } else {
-      onSearch(text);
+      onSearch(text, 1);
     }
 
     resetForm();

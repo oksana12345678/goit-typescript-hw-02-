@@ -12,11 +12,23 @@ import {
   UnsplashSearchResponse,
   Search,
 } from "./components/fetchImages/fetchImages";
+type Images = {
+  id: string;
+  description: string;
+  urls: {
+    small: string;
+    regular: string;
+  };
+  links: {
+    download: string;
+  };
+  likes: string;
+};
 
-function App() {
+const App: React.FC = () => {
   const [error, setError] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<Images[]>([]);
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -36,16 +48,16 @@ function App() {
   };
 
   const handleSearch = async (
-    searchTerm: Search,
-    page: Search
+    searchQuery: string,
+    page: number
   ): Promise<void> => {
     try {
       setImages([]);
       setLoading(true);
       setError(false);
       setPage(1);
-      setSearchTerm(searchTerm.searchQuery);
-      const data: UnsplashSearchResponse = await fetchImages(searchTerm, page);
+      setSearchTerm(searchQuery);
+      const data: UnsplashSearchResponse = await fetchImages(searchQuery, page);
       setImages(data.results);
       setTotalCollection(data.total);
       setEndOfCollection(false);
@@ -71,10 +83,8 @@ function App() {
       setEndOfCollection(false);
     }
   }, [page, totalImages]);
-  const handleLoadMore = async (
-    searchTerm: Search,
-    page: Search
-  ): Promise<void> => {
+
+  const handleLoadMore = async (): Promise<void> => {
     try {
       setLoading(true);
       const nextPageData = await fetchImages(searchTerm, page);
@@ -106,6 +116,6 @@ function App() {
       />
     </>
   );
-}
+};
 
 export default App;

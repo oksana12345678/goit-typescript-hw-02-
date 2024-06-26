@@ -12,11 +12,6 @@ type Images = {
     download: string;
   };
   likes: string;
-  isOpen: (images: {
-    urls: {
-      regular: string;
-    };
-  }) => void;
 };
 type Gallery = {
   images: Images[];
