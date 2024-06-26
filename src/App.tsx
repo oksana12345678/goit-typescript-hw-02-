@@ -8,10 +8,7 @@ import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import fetchImages from "./components/fetchImages/fetchImages";
 import EndOfImages from "./components/EndOfImages/EndOfImages";
 import ImageModal from "./components/ImageModal/ImageModal";
-import {
-  UnsplashSearchResponse,
-  Search,
-} from "./components/fetchImages/fetchImages";
+import { UnsplashSearchResponse } from "./components/fetchImages/fetchImages";
 type Images = {
   id: string;
   description: string;
