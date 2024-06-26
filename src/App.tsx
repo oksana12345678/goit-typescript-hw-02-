@@ -65,15 +65,15 @@ const App: React.FC = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
+  useEffect((): void => {
     const fetchTotalImages = async () => {
       const total = Math.ceil(totalCollection / 15);
       setTotalImages(total);
     };
-
     fetchTotalImages();
   }, [totalCollection]);
-  useEffect(() => {
+
+  useEffect((): void => {
     if (page >= totalImages) {
       setEndOfCollection(true);
     } else {
